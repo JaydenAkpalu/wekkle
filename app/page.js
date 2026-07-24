@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
 import Link from 'next/link'
-import { Paperclip, Plus, TrendingUp, ChevronDown } from 'lucide-react'
+import { Paperclip, Plus, TrendingUp, ChevronDown, Mail } from 'lucide-react'
 import Image from 'next/image'
 // Imported as a module (not a public/ URL string) — Next.js reads this file
 // directly at build time and knows its real width/height automatically.
@@ -290,8 +290,15 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="border-t border-slate-200 px-6 py-6">
-        <div className="max-w-6xl mx-auto text-center text-sm text-slate-400">
-          © 2026 JobFlow. Built for job seekers.
+        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-sm">
+          <span className="text-slate-400">© 2026 JobFlow. Built for job seekers.</span>
+          <a
+            href="mailto:jobflow.feedback@gmail.com?subject=JobFlow Feedback"
+            className="flex items-center gap-1.5 text-blue-600 font-medium hover:text-blue-700 transition-colors"
+          >
+            <Mail size={14} />
+            Send feedback
+          </a>
         </div>
       </footer>
 
