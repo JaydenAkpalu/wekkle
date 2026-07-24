@@ -73,17 +73,17 @@ export default function Home() {
           <div>
             <h1 className="text-5xl font-bold text-slate-900 leading-tight mb-6">
               Never wonder which<br />
-              resume you sent again.
+              resume you sent.
             </h1>
             <p className="text-xl text-slate-500 mb-10">
-              Track every application with the exact resume and cover letter you submitted, so you can review what you submitted before an interview.
+              Track every application with the exact resume and cover letter you submitted, so you can review them before every interview.
             </p>
             <div className="flex items-center gap-4">
               <Link
                 href="/signup"
                 className="bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors text-lg"
               >
-                Start Tracking Applications
+                Start Tracking For Free
               </Link>
               {/* Deliberately a <button>, not a <Link href="#how-it-works">.
                   A hash link only re-scrolls when the URL hash actually changes —
