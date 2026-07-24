@@ -1,5 +1,7 @@
 import Link from 'next/link'
-import { Paperclip } from 'lucide-react'
+import { Paperclip, Plus, TrendingUp } from 'lucide-react'
+import Image from 'next/image'
+import dashboardScreenshot from './assets/dashboard.jpg'
 
 export default function Home() {
   return (
@@ -47,10 +49,10 @@ export default function Home() {
                 Start Tracking Applications
               </Link>
               <Link
-                href="/login"
+                href="/#how-it-works"
                 className="text-slate-600 px-8 py-3 rounded-lg font-medium hover:text-slate-900 transition-colors text-lg border border-slate-200 hover:border-slate-300"
               >
-                Log in
+                See how it works
               </Link>
             </div>
           </div>
@@ -59,7 +61,7 @@ export default function Home() {
           <div className="relative h-[26rem] max-w-2xl w-full justify-self-center md:justify-self-end group">
 
             {/* Back card - Anthropic */}
-            <div className="absolute top-28 right-32 w-80 bg-slate-900 border border-slate-800 rounded-xl p-6 -rotate-[10deg] ">
+            <div className="absolute top-25 right-32 w-80 bg-slate-900 border border-slate-800 rounded-xl p-6 -rotate-[8deg] ">
               <p className="text-base font-medium text-slate-50">Anthropic</p>
               <p className="text-sm text-slate-400 mb-4">AI Eng Intern</p>
               <span className="inline-block text-sm font-medium text-white bg-blue-600 px-3 py-1 rounded-full mb-4">
@@ -76,7 +78,7 @@ export default function Home() {
             </div>
 
             {/* Middle card - Figma */}
-            <div className="absolute top-14 right-20 w-80 bg-slate-900 border border-slate-800 rounded-xl p-6 rotate-[7deg] ">
+            <div className="absolute top-14 right-22 w-80 bg-slate-900 border border-slate-800 rounded-xl p-6 rotate-[5deg] ">
               <p className="text-base font-medium text-slate-50">Figma</p>
               <p className="text-sm text-slate-400 mb-4">Product Eng Intern</p>
               <span className="inline-block text-sm font-medium text-green-950 bg-green-500 px-3 py-1 rounded-full mb-4">
@@ -89,7 +91,7 @@ export default function Home() {
             </div>
 
             {/* Front card - Google */}
-            <div className="absolute top-4 right-3 w-80 bg-slate-900 border border-slate-800 rounded-xl p-7 -rotate-2">
+            <div className="absolute top-2 right-4 w-80 bg-slate-900 border border-slate-800 rounded-xl p-7 rotate-[4deg]">
               <p className="text-lg font-medium text-slate-50">Google</p>
               <p className="text-sm text-slate-400 mb-4">Software Engineer Intern</p>
               <span className="inline-block text-sm font-medium text-yellow-950 bg-yellow-500 px-3 py-1 rounded-full mb-4">
@@ -104,6 +106,66 @@ export default function Home() {
           </div>
         </div>
       </main>
+
+      {/* Dashboard proof section */}
+      <section className="bg-gradient-to-b from-white to-slate-50 px-6 pb-24">
+        <div className="max-w-6xl mx-auto -mt-16">
+          <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-2xl">
+            <Image
+              src={dashboardScreenshot}
+              loading="eager"
+              alt="JobFlow dashboard showing 23 total applications, a status breakdown across Applied, Interview, Offer, Rejected, and Ghosted, and a list of recent applications including Google, Microsoft, and Reddit"
+              className="w-full h-auto"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* How it works */}
+      <section id="how-it-works" className="bg-white px-6 py-24">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-slate-900 mb-3">How it works</h2>
+            <p className="text-lg text-slate-500">Three steps. That's the whole system.</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+
+            <div>
+              <div className="relative inline-block mb-5">
+                <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center">
+                  <Plus size={22} className="text-blue-600" />
+                </div>
+                <span className="absolute -top-2 -left-2 w-6 h-6 bg-blue-600 text-white text-xs font-medium rounded-full flex items-center justify-center">1</span>
+              </div>
+              <h3 className="text-lg font-semibold text-slate-900 mb-2">Add an application</h3>
+              <p className="text-slate-500">Company, role, status, and the date you applied.</p>
+            </div>
+
+            <div>
+              <div className="relative inline-block mb-5">
+                <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center">
+                  <Paperclip size={22} className="text-blue-600" />
+                </div>
+                <span className="absolute -top-2 -left-2 w-6 h-6 bg-blue-600 text-white text-xs font-medium rounded-full flex items-center justify-center">2</span>
+              </div>
+              <h3 className="text-lg font-semibold text-slate-900 mb-2">Attach exactly what you sent</h3>
+              <p className="text-slate-500">The resume and cover letter version you used, for that specific application.</p>
+            </div>
+
+            <div>
+              <div className="relative inline-block mb-5">
+                <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center">
+                  <TrendingUp size={22} className="text-blue-600" />
+                </div>
+                <span className="absolute -top-2 -left-2 w-6 h-6 bg-blue-600 text-white text-xs font-medium rounded-full flex items-center justify-center">3</span>
+              </div>
+              <h3 className="text-lg font-semibold text-slate-900 mb-2">Track it from applied to offer</h3>
+              <p className="text-slate-500">Status updates as things move, all visible on one dashboard.</p>
+            </div>
+
+          </div>
+        </div>
+      </section>
 
       {/* Footer */}
       <footer className="border-t border-slate-200 px-6 py-6">
