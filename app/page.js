@@ -1,3 +1,4 @@
+'use client'
 import Link from 'next/link'
 import { Paperclip, Plus, TrendingUp } from 'lucide-react'
 import Image from 'next/image'
@@ -48,12 +49,12 @@ export default function Home() {
               >
                 Start Tracking Applications
               </Link>
-              <Link
-                href="/#how-it-works"
-                className="text-slate-600 px-8 py-3 rounded-lg font-medium hover:text-slate-900 transition-colors text-lg border border-slate-200 hover:border-slate-300"
+              <button
+                onClick={() => document.getElementById('how-it-works').scrollIntoView({ behavior: 'smooth' })}
+                className="text-slate-600 px-8 py-3 rounded-lg font-medium hover:text-slate-900 transition-colors text-lg border border-slate-200 hover:border-slate-300 cursor-pointer"
               >
                 See how it works
-              </Link>
+              </button>
             </div>
           </div>
 
@@ -61,7 +62,7 @@ export default function Home() {
           <div className="relative h-[26rem] max-w-2xl w-full justify-self-center md:justify-self-end group">
 
             {/* Back card - Anthropic */}
-            <div className="absolute top-25 right-32 w-80 bg-slate-900 border border-slate-800 rounded-xl p-6 -rotate-[8deg] ">
+            <div className="absolute top-25 right-32 w-80 bg-slate-900 border border-slate-800 rounded-xl p-6 -rotate-[5deg] ">
               <p className="text-base font-medium text-slate-50">Anthropic</p>
               <p className="text-sm text-slate-400 mb-4">AI Eng Intern</p>
               <span className="inline-block text-sm font-medium text-white bg-blue-600 px-3 py-1 rounded-full mb-4">
@@ -78,7 +79,7 @@ export default function Home() {
             </div>
 
             {/* Middle card - Figma */}
-            <div className="absolute top-14 right-22 w-80 bg-slate-900 border border-slate-800 rounded-xl p-6 rotate-[5deg] ">
+            <div className="absolute top-14 right-22 w-80 bg-slate-900 border border-slate-800 rounded-xl p-6 rotate-[4deg] ">
               <p className="text-base font-medium text-slate-50">Figma</p>
               <p className="text-sm text-slate-400 mb-4">Product Eng Intern</p>
               <span className="inline-block text-sm font-medium text-green-950 bg-green-500 px-3 py-1 rounded-full mb-4">
