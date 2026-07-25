@@ -2,7 +2,7 @@
 
 A full-stack web app that helps job seekers track all their job applications — across every platform — in one place.
 
-**Live app:** [myjobflow.dev](https://myjobflow.vercel.app)
+**Live app:** [myjobflow.dev](https://myjobflow.dev)
 
 ![JobFlow Landing Page](screenshots/landing-page.png)
 
@@ -33,7 +33,7 @@ JobFlow lets me attach the exact resume (and cover letter) to each application, 
 ### Dashboard
 Live stats computed from real application data — total count, status breakdown, and recent applications.
 
-![Dashboard](screenshots/dashboard.png)
+![Dashboard](screenshots/dashboard.jpg)
 
 ### Applications List
 Search and filter across all applications.
