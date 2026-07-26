@@ -31,8 +31,11 @@ export async function GET(request, { params }) {
 
   // if not found or belongs to another user, return 404
   if (error) {
+  if (error.code === 'PGRST116') {
     return NextResponse.json({ error: 'Application not found' }, { status: 404 })
   }
+  return NextResponse.json({ error: 'Failed to fetch application' }, { status: 500 })
+}
 
   // return the application as JSON with default 200 status
   return NextResponse.json({ application })
@@ -94,8 +97,11 @@ export async function PATCH(request, { params }) {
     .single()
 
   if (fetchError) {
+  if (fetchError.code === 'PGRST116') {
     return NextResponse.json({ error: 'Application not found' }, { status: 404 })
   }
+  return NextResponse.json({ error: 'Failed to fetch application' }, { status: 500 })
+}
 
   // if a new resume was uploaded, replace the existing one
   if (resumeFile && resumeFile.size > 0) {
@@ -202,8 +208,11 @@ export async function DELETE(request, { params }) {
     .single()
 
   if (fetchError) {
+  if (fetchError.code === 'PGRST116') {
     return NextResponse.json({ error: 'Application not found' }, { status: 404 })
   }
+  return NextResponse.json({ error: 'Failed to fetch application' }, { status: 500 })
+}
 
   // delete resume from storage if one exists
   if (existing.resume_path) {
