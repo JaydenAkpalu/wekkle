@@ -1,5 +1,6 @@
 import localFont from 'next/font/local'
 import './globals.css'
+import { Analytics } from '@/vercel/analytics/react'
 
 const cooperHewitt = localFont({
   src: [
@@ -19,6 +20,7 @@ export default function RootLayout({ children }) {
     <html lang="en" className="h-full">
       <body className={`${cooperHewitt.className} min-h-full flex flex-col`}>
         {children}
+        <Analytics/>
       </body>
     </html>
   )
