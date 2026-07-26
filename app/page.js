@@ -3,16 +3,11 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { Paperclip, Plus, TrendingUp, ChevronDown, Mail } from 'lucide-react'
 import Image from 'next/image'
-// Imported as a module (not a public/ URL string) — Next.js reads this file
-// directly at build time and knows its real width/height automatically.
 import dashboardScreenshot from './assets/dashboard.jpg'
 
 export default function Home() {
-  // Tracks which FAQ item is open. null = none open. A number = that index is open.
   const [openIndex, setOpenIndex] = useState(null)
 
-  // Array of Q&A objects — .map() below loops over this instead of
-  // hardcoding four separate <div> blocks by hand.
   const faqs = [
     {
       question: 'Is JobFlow free?',
@@ -32,8 +27,6 @@ export default function Home() {
     },
   ]
 
-  // Toggle logic: if the clicked index is already open, close it (null).
-  // Otherwise, open the clicked one. Only one FAQ can be open at a time.
   function toggleFaq(index) {
     setOpenIndex(openIndex === index ? null : index)
   }
@@ -41,8 +34,7 @@ export default function Home() {
   return (
     <div className="min-h-screen flex flex-col bg-white text-slate-900">
 
-      {/* Navbar — shared max-w-6xl container, same width used by hero and dashboard
-          section below, so all three stay visually aligned on the same edges */}
+      {/* Navbar */}
       <nav className="border-b border-slate-200 px-6 py-4">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <span className="text-xl font-bold text-slate-900">JobFlow</span>
@@ -63,10 +55,8 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* Hero — no flex-1/items-center here (removed on purpose): that combo was
-          stretching this section to fill the whole screen height on tall monitors,
-          which broke the -mt-16 overlap on the dashboard section below it. */}
-      <main className="flex-1 flex items-center px-6 py-24">
+      {/* Hero */}
+      <main className="flex-1 flex items-center px-6 py-15 md:py-24">
         <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
 
           {/* Left column - text content */}
@@ -78,20 +68,26 @@ export default function Home() {
             <p className="text-xl text-slate-500 mb-10">
               Track every application with the exact resume and cover letter you submitted, so you can review them before every interview.
             </p>
-            <div className="flex items-center gap-4">
+            {/* RESPONSIVE FIX: was `flex items-center gap-4` with no mobile
+                fallback — both buttons squeezed into one row, forcing
+                "Start Tracking For Free" to wrap across 3 lines inside a
+                button sized for desktop.
+                flex-col on mobile + no items-center at that level lets
+                flexbox's default align-items:stretch kick in, so each
+                button/link stretches to the full container width
+                automatically — no separate w-full needed. sm:flex-row
+                sm:items-center restores the original side-by-side,
+                content-sized layout at sm and up. */}
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
               <Link
                 href="/signup"
-                className="bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors text-lg"
+                className="bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors text-lg text-center"
               >
                 Start Tracking For Free
               </Link>
-              {/* Deliberately a <button>, not a <Link href="#how-it-works">.
-                  A hash link only re-scrolls when the URL hash actually changes —
-                  clicking it twice in a row (without leaving the page) does nothing
-                  the second time. scrollIntoView() re-runs on every click regardless. */}
               <button
                 onClick={() => document.getElementById('how-it-works').scrollIntoView({ behavior: 'smooth' })}
-                className="text-slate-600 px-8 py-3 rounded-lg font-medium hover:text-slate-900 transition-colors text-lg border border-slate-200 hover:border-slate-300 cursor-pointer"
+                className="text-slate-600 px-8 py-3 rounded-lg font-medium hover:text-slate-900 transition-colors text-lg border border-slate-200 hover:border-slate-300 cursor-pointer text-center"
               >
                 See how it works
               </button>
@@ -99,18 +95,17 @@ export default function Home() {
           </div>
 
           {/* Right column - stacked application cards.
-              relative on the wrapper + absolute on each card is what allows them
-              to overlap each other (same mechanism as your dashboard layout's
-              fixed sidebar/navbar, just applied to three small cards instead). */}
-          <div className="relative h-[26rem] max-w-2xl w-full justify-self-center md:justify-self-end group">
+              RESPONSIVE FIX: hidden entirely below md, not scaled down.
+              These cards are w-80 with offsets like right-32 — that
+              combination needs 500px+ of horizontal room to render without
+              overflowing, which no phone screen has. Scaling them down to
+              fit would make the filename/status text illegible, defeating
+              the point of showing them at all. The dashboard proof section
+              below still carries "this is real" on mobile, so nothing is
+              lost, just not duplicated. */}
+          <div className="hidden md:block relative h-[26rem] max-w-2xl w-full md:justify-self-end group">
 
-            {/* Back card - Anthropic.
-                shadow-[...] is two shadows stacked in one arbitrary value:
-                first part = normal drop shadow (depth), second part = a soft
-                zero-offset blue-tinted shadow (the "glow"). This card carries
-                the glow because it has open background on its exposed edges —
-                the front/middle cards don't, so a glow there would just smear
-                onto the neighboring card instead of reading as a glow. */}
+            {/* Back card - Anthropic */}
             <div className="absolute top-25 right-32 w-80 bg-slate-900 border border-slate-800 rounded-xl p-6 -rotate-[5deg] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25),0_0_50px_-5px_rgba(37,99,235,0.50)]">
               <p className="text-base font-medium text-slate-50">Anthropic</p>
               <p className="text-sm text-slate-400 mb-4">AI Eng Intern</p>
@@ -127,8 +122,7 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Middle card - Figma. No shadow — sits flat between the two
-                cards that do have elevation, on purpose. */}
+            {/* Middle card - Figma */}
             <div className="absolute top-14 right-22 w-80 bg-slate-900 border border-slate-800 rounded-xl p-6 rotate-[2deg] ">
               <p className="text-base font-medium text-slate-50">Figma</p>
               <p className="text-sm text-slate-400 mb-4">Product Eng Intern</p>
@@ -141,10 +135,7 @@ export default function Home() {
               </div>
             </div>
 
-           {/* Front card - Google. Plain shadow-xl (depth only, no glow) —
-               this is the card meant to read as "closest to the viewer",
-               so it keeps its own distinct elevation instead of sharing
-               the back card's glow treatment. */}
+            {/* Front card - Google */}
             <div className="absolute top-2 right-5 w-80 bg-slate-900 border border-slate-800 rounded-xl p-7 rotate-[4deg] shadow-xl">
               <p className="text-lg font-medium text-slate-50">Google</p>
               <p className="text-sm text-slate-400 mb-4">Software Engineer Intern</p>
@@ -162,21 +153,20 @@ export default function Home() {
       </main>
 
       {/* Dashboard proof section.
-          bg-gradient-to-b from-white to-slate-50: starts as pure white (matching
-          the hero exactly, no visible seam) and eases into light gray by the
-          bottom of the section.
-          -mt-16 on the inner wrapper pulls the white image card UP into the
-          hero's bottom padding (py-24), so the card visually crosses the
-          boundary between the two sections instead of the page just stacking
-          two flat blocks. */}
-      <section className="bg-gradient-to-b from-white to-slate-50 px-6 pb-24">
-        <div className="max-w-6xl mx-auto -mt-16">
+          RESPONSIVE FIX: pb-24 (96px) was fixed regardless of screen size.
+          At mobile width the image itself renders much shorter (~200px
+          tall), so 96px of empty space below it reads as proportionally
+          huge — nearly half the image's own height. pb-12 md:pb-24 halves
+          it on mobile, restores the original value at md and up.
+          -mt-16 left as-is: now that the hero above has a predictable
+          height (no more broken card overflow inflating it unpredictably),
+          this should overlap correctly — worth a fresh look after these
+          changes rather than assuming. */}
+      <section className="bg-gradient-to-b from-white to-slate-50 px-6 pb-12 md:pb-24">
+        <div className="max-w-6xl mx-auto -mt-8 md:-mt-16">
           <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-2xl">
             <Image
               src={dashboardScreenshot}
-              // loading="eager" overrides next/image's default lazy-loading.
-              // This image is above the fold, so Next.js flagged it as the
-              // LCP (Largest Contentful Paint) element and recommended this.
               loading="eager"
               alt="JobFlow dashboard showing 23 total applications, a status breakdown across Applied, Interview, Offer, Rejected, and Ghosted, and a list of recent applications including Google, Microsoft, and Reddit"
               className="w-full h-auto"
@@ -185,10 +175,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* How it works — id="how-it-works" is the scroll target for the hero
-          button above. Three-column grid on desktop, stacks to one column
-          on mobile automatically via md:grid-cols-3. */}
-      <section id="how-it-works" className="bg-white px-6 py-24">
+      {/* How it works */}
+      <section id="how-it-works" className="bg-white px-6 py-16 md:py-24">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-slate-900 mb-3">How it works</h2>
@@ -196,9 +184,6 @@ export default function Home() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
 
-            {/* Step 1 — icon + small numbered circle badge positioned on top
-                of it via relative/absolute, same overlap technique as the
-                hero cards, just at a much smaller scale. */}
             <div>
               <div className="relative inline-block mb-5">
                 <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center">
@@ -210,8 +195,6 @@ export default function Home() {
               <p className="text-slate-500">Company, role, status, and the date you applied.</p>
             </div>
 
-            {/* Step 2 — reuses the Paperclip icon from the hero cards on purpose,
-                so the same icon means the same thing in both places. */}
             <div>
               <div className="relative inline-block mb-5">
                 <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center">
@@ -223,7 +206,6 @@ export default function Home() {
               <p className="text-slate-500">The resume and cover letter version you used, for that specific application.</p>
             </div>
 
-            {/* Step 3 */}
             <div>
               <div className="relative inline-block mb-5">
                 <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center">
@@ -239,10 +221,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* FAQ — no border-t here on purpose (kept as plain bg-white, matching
-          the section above it). Runs on the faqs array + openIndex state
-          defined at the top of the component. */}
-      <section className="bg-white px-6 py-24">
+      {/* FAQ */}
+      <section className="bg-white px-6 py-16 md:py-24">
         <div className="max-w-3xl mx-auto">
           <h2 className="text-3xl font-bold text-slate-900 text-center mb-12">Frequently asked questions</h2>
           <div className="space-y-3">
@@ -253,18 +233,11 @@ export default function Home() {
                   className="w-full flex items-center justify-between px-6 py-4 text-left"
                 >
                   <span className="font-medium text-slate-900">{faq.question}</span>
-                  {/* Chevron rotates 180° when this item is the open one —
-                      same ternary-inside-template-literal pattern as your
-                      status badge colors, just toggling a rotate class
-                      instead of a color class. */}
                   <ChevronDown
                     size={18}
                     className={`text-slate-400 transition-transform flex-shrink-0 ml-4 ${openIndex === index ? 'rotate-180' : ''}`}
                   />
                 </button>
-                {/* Answer only renders in the DOM at all when this is the
-                    open index — same && conditional-render pattern used
-                    for optional fields on the application detail page. */}
                 {openIndex === index && (
                   <p className="px-6 pb-4 text-slate-500">{faq.answer}</p>
                 )}
@@ -274,10 +247,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Final CTA — border-t here (unlike FAQ above) is the one visual
-          divider on this half of the page, marking the boundary before
-          the closing pitch + footer. */}
-      <section className="bg-white border-t border-slate-200 px-6 py-20 text-center">
+      {/* Final CTA */}
+      <section className="bg-white border-t border-slate-200 px-6 py-14 md:py-20 text-center">
         <h2 className="text-3xl font-bold text-slate-900 mb-4">Ready for your next interview?</h2>
         <p className="text-slate-500 mb-8">Get organized today. Free to use, takes less than two minutes to set up.</p>
         <Link

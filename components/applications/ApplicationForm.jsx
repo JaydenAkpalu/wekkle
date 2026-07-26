@@ -26,6 +26,12 @@ export default function ApplicationForm({ mode, id }) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
+  // separate from `error` above on purpose. `error` shows an inline
+  // message above a visible, working form (validation/submit failures).
+  // loadError means there's no form to show at all — the application this
+  // edit page needs to fetch either doesn't exist or isn't yours.
+  const [loadError, setLoadError] = useState(null)
+
   const router = useRouter()
 
   // if mode is edit, fetch the existing application and pre-fill all text fields
@@ -37,23 +43,32 @@ export default function ApplicationForm({ mode, id }) {
       // skip entirely when creating a new application
       if (mode !== 'edit') return
 
-      const response = await fetch(`/api/applications/${id}`)
-      const data = await response.json()
+      try {
+        const response = await fetch(`/api/applications/${id}`)
 
-      // pre-fill every field with the existing values
-      // optional fields default to '' if null, to avoid React controlled input warnings
-      setCompanyName(data.application.company_name)
-      setJobTitle(data.application.job_title)
-      setJobUrl(data.application.job_url || '')
-      setLocation(data.application.location || '')
-      setStatus(data.application.status)
-      setAppliedDate(data.application.applied_date)
-      setNotes(data.application.notes || '')
-      setExistingResumeFilename(data.application.resume_filename)
-      setExistingCoverLetterFilename(data.application.cover_letter_filename)
+        if (!response.ok) {
+          setLoadError('This application could not be found.')
+          return
+        }
 
-      // pre-fill is done, safe to show the form now
-      setInitialLoading(false)
+        const data = await response.json()
+
+        // pre-fill every field with the existing values
+        // optional fields default to '' if null, to avoid React controlled input warnings
+        setCompanyName(data.application.company_name)
+        setJobTitle(data.application.job_title)
+        setJobUrl(data.application.job_url || '')
+        setLocation(data.application.location || '')
+        setStatus(data.application.status)
+        setAppliedDate(data.application.applied_date)
+        setNotes(data.application.notes || '')
+        setExistingResumeFilename(data.application.resume_filename)
+        setExistingCoverLetterFilename(data.application.cover_letter_filename)
+      } catch (err) {
+        setLoadError('Failed to load application')
+      } finally {
+        setInitialLoading(false)
+      }
     }
     fetchExistingApplication()
   }, [mode, id])
@@ -126,16 +141,85 @@ export default function ApplicationForm({ mode, id }) {
         </Link>
 
 
-      {/* Error message — validation or API errors */}
+      {/* Error message — validation or API errors from submit */}
       {error && (
         <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg px-4 py-3 mb-6">
           {error}
         </div>
       )}
 
-      {/* While fetching existing data in edit mode, show a loading message instead of an empty form */}
+      {/* Three-way branch: skeleton while fetching existing data in edit mode,
+          loadError message if that fetch failed, otherwise the real form.
+          Note: initialLoading starts false in create mode, so this skeleton
+          only ever appears on the edit route. */}
       {initialLoading ? (
-        <div className="text-center py-12 text-slate-500">Loading application...</div>
+        <div className="space-y-5">
+
+          {/* Company Name skeleton */}
+          <div>
+            <div className="h-3.5 w-28 bg-slate-200 rounded animate-pulse mb-2"></div>
+            <div className="h-11 w-full bg-slate-200 rounded-lg animate-pulse"></div>
+          </div>
+
+          {/* Job Title skeleton */}
+          <div>
+            <div className="h-3.5 w-20 bg-slate-200 rounded animate-pulse mb-2"></div>
+            <div className="h-11 w-full bg-slate-200 rounded-lg animate-pulse"></div>
+          </div>
+
+          {/* Job URL skeleton */}
+          <div>
+            <div className="h-3.5 w-16 bg-slate-200 rounded animate-pulse mb-2"></div>
+            <div className="h-11 w-full bg-slate-200 rounded-lg animate-pulse"></div>
+          </div>
+
+          {/* Location skeleton */}
+          <div>
+            <div className="h-3.5 w-16 bg-slate-200 rounded animate-pulse mb-2"></div>
+            <div className="h-11 w-full bg-slate-200 rounded-lg animate-pulse"></div>
+          </div>
+
+          {/* Status + Applied Date skeleton — side by side, matching the real layout */}
+          <div className="flex gap-4">
+            <div className="flex-1">
+              <div className="h-3.5 w-14 bg-slate-200 rounded animate-pulse mb-2"></div>
+              <div className="h-11 w-full bg-slate-200 rounded-lg animate-pulse"></div>
+            </div>
+            <div className="flex-1">
+              <div className="h-3.5 w-24 bg-slate-200 rounded animate-pulse mb-2"></div>
+              <div className="h-11 w-full bg-slate-200 rounded-lg animate-pulse"></div>
+            </div>
+          </div>
+
+          {/* Notes skeleton — taller, matching the textarea */}
+          <div>
+            <div className="h-3.5 w-14 bg-slate-200 rounded animate-pulse mb-2"></div>
+            <div className="h-20 w-full bg-slate-200 rounded-lg animate-pulse"></div>
+          </div>
+
+          {/* Resume upload skeleton */}
+          <div>
+            <div className="h-3.5 w-28 bg-slate-200 rounded animate-pulse mb-2"></div>
+            <div className="h-10 w-full bg-slate-200 rounded-lg animate-pulse"></div>
+          </div>
+
+          {/* Cover Letter upload skeleton */}
+          <div>
+            <div className="h-3.5 w-32 bg-slate-200 rounded animate-pulse mb-2"></div>
+            <div className="h-10 w-full bg-slate-200 rounded-lg animate-pulse"></div>
+          </div>
+
+          {/* Buttons skeleton */}
+          <div className="flex gap-3 pt-2">
+            <div className="h-11 w-36 bg-slate-200 rounded-lg animate-pulse"></div>
+            <div className="h-11 w-24 bg-slate-200 rounded-lg animate-pulse"></div>
+          </div>
+
+        </div>
+      ) : loadError ? (
+        <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg px-4 py-3">
+          {loadError}
+        </div>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-5">
 

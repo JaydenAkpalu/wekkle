@@ -9,25 +9,29 @@ export default function ApplicationDetailPage({ params }) {
   const [application, setApplication] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  
+
   // extract application id from URL params
   const { id } = use(params)
 
   // fetch the application by id when the page loads
   useEffect(() => {
-    async function fetchApplication() {
-      try {
-        const response = await fetch(`/api/applications/${id}`)
-        const data = await response.json()
-        setApplication(data.application)
-      } catch (err) {
-        setError('Failed to load application')
-      } finally {
-        setLoading(false)
+  async function fetchApplication() {
+    try {
+      const response = await fetch(`/api/applications/${id}`)
+      if (!response.ok) {
+        setError('Application not found')
+        return
       }
+      const data = await response.json()
+      setApplication(data.application)
+    } catch (err) {
+      setError('Failed to load application')
+    } finally {
+      setLoading(false)
     }
-    fetchApplication()
-  }, [id])
+  }
+  fetchApplication()
+}, [id])
 
   // fetch a signed download URL from the API and open the file in a new tab
   async function handleDownload(type) {
@@ -47,9 +51,62 @@ export default function ApplicationDetailPage({ params }) {
         ← Back to Applications
       </Link>
 
-      {/* Loading state — shown while fetching application data */}
+      {/* Loading state — skeleton instead of plain text */}
       {loading && (
-        <div className="text-center py-12 text-slate-500">Loading...</div>
+        <div>
+
+          {/* Header skeleton — company name, job title, edit button */}
+          <div className="flex items-start justify-between mb-6">
+            <div>
+              <div className="h-7 w-48 bg-slate-200 rounded animate-pulse mb-2"></div>
+              <div className="h-4 w-32 bg-slate-200 rounded animate-pulse"></div>
+            </div>
+            <div className="h-9 w-16 bg-slate-200 rounded-lg animate-pulse"></div>
+          </div>
+
+          {/* Status badge skeleton */}
+          <div className="mb-6">
+            <div className="h-6 w-20 bg-slate-200 rounded-full animate-pulse"></div>
+          </div>
+
+          {/* Details card skeleton */}
+          <div className="bg-white border border-slate-200 rounded-xl p-6 space-y-4 mb-6">
+            <div>
+              <div className="h-3 w-24 bg-slate-200 rounded animate-pulse mb-2"></div>
+              <div className="h-4 w-28 bg-slate-200 rounded animate-pulse"></div>
+            </div>
+            <div>
+              <div className="h-3 w-24 bg-slate-200 rounded animate-pulse mb-2"></div>
+              <div className="h-4 w-36 bg-slate-200 rounded animate-pulse"></div>
+            </div>
+            <div>
+              <div className="h-3 w-24 bg-slate-200 rounded animate-pulse mb-2"></div>
+              <div className="h-4 w-full bg-slate-200 rounded animate-pulse"></div>
+            </div>
+          </div>
+
+          {/* Documents card skeleton */}
+          <div className="bg-white border border-slate-200 rounded-xl p-6">
+            <div className="h-4 w-24 bg-slate-200 rounded animate-pulse mb-4"></div>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="h-4 w-16 bg-slate-200 rounded animate-pulse mb-1"></div>
+                  <div className="h-3 w-28 bg-slate-200 rounded animate-pulse"></div>
+                </div>
+                <div className="h-4 w-16 bg-slate-200 rounded animate-pulse"></div>
+              </div>
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="h-4 w-24 bg-slate-200 rounded animate-pulse mb-1"></div>
+                  <div className="h-3 w-28 bg-slate-200 rounded animate-pulse"></div>
+                </div>
+                <div className="h-4 w-16 bg-slate-200 rounded animate-pulse"></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
       )}
 
       {/* Error state — shown if fetch failed */}

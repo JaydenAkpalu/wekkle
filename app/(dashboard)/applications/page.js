@@ -21,53 +21,61 @@ export default function ApplicationsPage() {
     async function fetchApplications() {
       try {
         const response = await fetch('/api/applications')
+
+        if (!response.ok) {
+          setError('Failed to load applications')
+          return
+        }
+
         const data = await response.json()
         setApplications(data.applications)
       } catch (err) {
         setError('Failed to load applications')
       } finally {
-        // always set loading to false whether fetch succeeded or failed
         setLoading(false)
       }
     }
     fetchApplications()
-  }, []) // empty array — run once on mount, never again
+  }, [])
 
   // filter applications client-side based on search query and status filter
   // this runs on every render so the list updates instantly as the user types
   const filteredApplications = applications.filter((application) => {
-    // match company name or job title — case insensitive
     const matchesSearch =
       searchQuery === '' ||
       application.company_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       application.job_title.toLowerCase().includes(searchQuery.toLowerCase())
 
-    // match status exactly — empty string means no filter applied
     const matchesStatus =
       statusFilter === '' || application.status === statusFilter
 
-    // only include application if both conditions pass
     return matchesSearch && matchesStatus
   })
 
-  // clicking the Delete button no longer deletes immediately —
-  // it just opens the modal by storing which application id is pending deletion
   function handleDeleteClick(id) {
     setConfirmDeleteId(id)
   }
 
-  // the actual delete — only runs when the user confirms inside the modal
   async function handleDelete() {
-    await fetch(`/api/applications/${confirmDeleteId}`, { method: 'DELETE' })
-    // remove the deleted application from state immediately (optimistic UI)
+    const response = await fetch(`/api/applications/${confirmDeleteId}`, { method: 'DELETE' })
+
+    if (!response.ok) {
+      setError('Failed to delete application')
+      setConfirmDeleteId(null)
+      return
+    }
+
     setApplications(applications.filter((app) => app.id !== confirmDeleteId))
-    // close the modal
     setConfirmDeleteId(null)
   }
 
-  // closes the modal without deleting anything
   function handleCancelDelete() {
     setConfirmDeleteId(null)
+  }
+
+  function handleClearFilters() {
+    setSearchQuery('')
+    setStatusFilter('')
   }
 
   return (
@@ -83,8 +91,11 @@ export default function ApplicationsPage() {
         </Link>
       </div>
 
-      {/* Filters — search input and status dropdown */}
-      <div className="flex gap-3 mb-6">
+      {/* Filters — search input and status dropdown.
+          RESPONSIVE: stacks vertically below sm, sits side-by-side at sm
+          and up. Search input was already flex-1 so it naturally goes
+          full-width when stacked. */}
+      <div className="flex flex-col sm:flex-row gap-3 mb-6">
         <input
           type="text"
           placeholder="Search by company or role..."
@@ -106,10 +117,30 @@ export default function ApplicationsPage() {
         </select>
       </div>
 
-      {/* Loading state — shown while fetch is in progress */}
+      {/* Loading state — skeleton.
+          RESPONSIVE: matches the real list's layout exactly (see below) —
+          a skeleton needs to mirror its real content's responsive
+          behavior, or it'll visibly jump/reflow the instant real data
+          replaces it. */}
       {loading && (
-        <div className="text-center py-12 text-slate-500">
-          Loading applications...
+        <div className="space-y-3">
+          {[1, 2, 3, 4, 5].map((i) => (
+            <div key={i} className="bg-white border border-slate-200 rounded-lg p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="h-4 w-32 bg-slate-200 rounded animate-pulse"></div>
+                  <div className="h-4 w-16 bg-slate-200 rounded-full animate-pulse"></div>
+                </div>
+                <div className="h-3 w-40 bg-slate-200 rounded animate-pulse mb-1"></div>
+                <div className="h-3 w-20 bg-slate-200 rounded animate-pulse"></div>
+              </div>
+              <div className="flex items-center gap-2 sm:ml-4">
+                <div className="h-8 w-12 bg-slate-200 rounded-lg animate-pulse"></div>
+                <div className="h-8 w-12 bg-slate-200 rounded-lg animate-pulse"></div>
+                <div className="h-8 w-14 bg-slate-200 rounded-lg animate-pulse"></div>
+              </div>
+            </div>
+          ))}
         </div>
       )}
 
@@ -136,17 +167,29 @@ export default function ApplicationsPage() {
       {/* Has applications but none match filter */}
       {!loading && !error && applications.length > 0 && filteredApplications.length === 0 && (
         <div className="text-center py-12">
-          <p className="text-slate-500">No applications match your search or filter</p>
+          <p className="text-slate-500 mb-4">No applications match your search or filter</p>
+          <button
+            onClick={handleClearFilters}
+            className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+          >
+            Clear filters
+          </button>
         </div>
       )}
 
-      {/* Applications list — rendered when data is loaded and results exist */}
+      {/* Applications list — rendered when data is loaded and results exist.
+          RESPONSIVE FIX: was `flex items-center justify-between` with no
+          fallback — on a narrow screen this crammed company name, status
+          badge, and three action buttons into one horizontal line with
+          nowhere to shrink to. Now stacks below sm: info on top, actions
+          in their own row underneath with real tap-target room. At sm and
+          up, behaves exactly as before (side-by-side, no visual change). */}
       {!loading && !error && filteredApplications.length > 0 && (
         <div className="space-y-3">
           {filteredApplications.map((application) => (
             <div
               key={application.id}
-              className="bg-white border border-slate-200 rounded-lg p-4 flex items-center justify-between hover:border-slate-300 transition-colors"
+              className="bg-white border border-slate-200 rounded-lg p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 hover:border-slate-300 transition-colors"
             >
               {/* Application info — company, status badge, role, date */}
               <div className="flex-1">
@@ -154,7 +197,6 @@ export default function ApplicationsPage() {
                   <h3 className="font-semibold text-slate-900 capitalize">
                     {application.company_name}
                   </h3>
-                  {/* Status badge — color changes based on status value */}
                   <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
                     application.status === 'applied' ? 'bg-blue-50 text-blue-600' :
                     application.status === 'interview' ? 'bg-yellow-50 text-yellow-600' :
@@ -162,7 +204,6 @@ export default function ApplicationsPage() {
                     application.status === 'rejected' ? 'bg-red-50 text-red-600' :
                     'bg-slate-100 text-slate-600'
                   }`}>
-                    {/* Capitalise first letter of status for display */}
                     {application.status.charAt(0).toUpperCase() + application.status.slice(1)}
                   </span>
                 </div>
@@ -170,8 +211,11 @@ export default function ApplicationsPage() {
                 <p className="text-xs text-slate-400 mt-1">{application.applied_date}</p>
               </div>
 
-              {/* Action buttons — view, edit, delete */}
-              <div className="flex items-center gap-2 ml-4">
+              {/* Action buttons — view, edit, delete.
+                  ml-4 → sm:ml-4: that left margin only makes sense when
+                  actions sit beside the info, not stacked below it. gap-3
+                  on the parent already handles spacing in both layouts. */}
+              <div className="flex items-center gap-2 sm:ml-4">
                 <Link
                   href={`/applications/${application.id}`}
                   className="text-sm text-slate-600 hover:text-slate-900 px-3 py-1.5 rounded-lg hover:bg-slate-100 transition-colors"
@@ -184,7 +228,6 @@ export default function ApplicationsPage() {
                 >
                   Edit
                 </Link>
-                {/* now opens the modal instead of deleting immediately */}
                 <button
                   onClick={() => handleDeleteClick(application.id)}
                   className="text-sm text-red-500 hover:text-red-700 px-3 py-1.5 rounded-lg hover:bg-red-50 transition-colors"
@@ -197,8 +240,9 @@ export default function ApplicationsPage() {
         </div>
       )}
 
-      {/* Delete confirmation modal — only renders when confirmDeleteId is not null */}
-      {/* fixed + inset-0 covers the entire viewport; bg-black/40 dims the page behind it */}
+      {/* Delete confirmation modal — already responsive as-is.
+          max-w-sm caps the width, mx-4 guarantees side breathing room on
+          any screen size, so no changes needed here. */}
       {confirmDeleteId && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
           <div className="bg-white rounded-xl p-6 max-w-sm w-full mx-4">

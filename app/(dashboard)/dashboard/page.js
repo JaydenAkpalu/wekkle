@@ -14,6 +14,21 @@ export default function DashboardPage() {
     async function fetchDashboard() {
     try {
     const response = await fetch('/api/dashboard/stats')
+
+    // NEW — the fix. Without this, a non-2xx response (401 from an expired
+    // session, 500 from a server error) would still reach setStats(data)
+    // below. Since data would be something like { error: '...' } instead
+    // of { total, by_status, recent }, the JSX guard further down
+    // (stats &&) would still be true — an error object is truthy — and
+    // React would try to render stats.total and stats.by_status.applied,
+    // which don't exist on that shape. That's a crash, not a graceful
+    // failure, because it happens after the loading/error checks have
+    // already passed.
+    if (!response.ok) {
+      setError('Failed to load dashboard')
+      return
+    }
+
     const data = await response.json()
     setStats(data)
     } catch(err) {
@@ -33,9 +48,43 @@ export default function DashboardPage() {
     return (
     <div className="p-6 max-w-6xl mx-auto">
 
-      {/* Loading state */}
+      {/* Loading state — skeleton instead of plain text */}
       {loading && (
-        <div className="text-center py-12 text-slate-500">Loading...</div>
+        <div>
+
+          {/* Total Applications skeleton */}
+          <div className="bg-white border border-slate-200 rounded-xl p-6 mb-6">
+            <div className="h-3 w-32 bg-slate-200 rounded animate-pulse mb-2"></div>
+            <div className="h-8 w-16 bg-slate-200 rounded animate-pulse"></div>
+          </div>
+
+          {/* Status breakdown skeleton — 5 neutral gray cards, same grid as real one */}
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <div key={i} className="bg-slate-50 border border-slate-200 rounded-xl p-6">
+                <div className="h-3 w-16 bg-slate-200 rounded animate-pulse mb-2"></div>
+                <div className="h-6 w-8 bg-slate-200 rounded animate-pulse"></div>
+              </div>
+            ))}
+          </div>
+
+          {/* Recent Applications skeleton */}
+          <div className="bg-white border border-slate-200 rounded-xl p-4">
+            <div className="h-4 w-40 bg-slate-200 rounded animate-pulse mb-4"></div>
+            <div className="space-y-3">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <div key={i} className="flex items-center justify-between py-2 px-2">
+                  <div>
+                    <div className="h-4 w-32 bg-slate-200 rounded animate-pulse mb-2"></div>
+                    <div className="h-3 w-24 bg-slate-200 rounded animate-pulse"></div>
+                  </div>
+                  <div className="h-3 w-16 bg-slate-200 rounded animate-pulse"></div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+        </div>
       )}
 
       {/* Error state */}
