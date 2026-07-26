@@ -1,6 +1,6 @@
 import localFont from 'next/font/local'
 import './globals.css'
-import { Analytics } from '@/vercel/analytics/react'
+import { Analytics } from '@vercel/analytics/react'
 
 const cooperHewitt = localFont({
   src: [
