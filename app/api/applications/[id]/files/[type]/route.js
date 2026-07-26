@@ -34,8 +34,13 @@ export async function GET(request, { params }) {
     .single()
 
   if (fetchError) {
-    return NextResponse.json({ error: 'Failed to fetch application' }, { status: 500 })
+  if (fetchError.code === 'PGRST116') {
+    // no row matched — either doesn't exist, or belongs to someone else
+    return NextResponse.json({ error: 'Application not found' }, { status: 404 })
   }
+  // any other error code — a genuine, unexpected server-side failure
+  return NextResponse.json({ error: 'Failed to fetch application' }, { status: 500 })
+}
 
   // determine which file path and filename to use based on the requested type
   let filePath
