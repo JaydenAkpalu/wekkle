@@ -4,6 +4,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import posthog from 'posthog-js'
 
 // mode: 'create' or 'edit' — controls whether this form creates or updates an application
 // id: only used when mode is 'edit' — the application being edited
@@ -118,6 +119,20 @@ export default function ApplicationForm({ mode, id }) {
       setLoading(false)
       window.scrollTo({ top: 0, behavior: 'smooth' })
       return
+    }
+
+    if (mode === 'edit') {
+      posthog.capture('application_updated', {
+        status,
+        has_resume: !!resumeFile,
+        has_cover_letter: !!coverLetterFile,
+      })
+    } else {
+      posthog.capture('application_created', {
+        status,
+        has_resume: !!resumeFile,
+        has_cover_letter: !!coverLetterFile,
+      })
     }
 
     // success — go back to the list where the new/updated application is visible

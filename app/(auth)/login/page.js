@@ -1,10 +1,11 @@
 'use client'
 
 //-- Imports --
-import { useState } from 'react' 
+import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import posthog from 'posthog-js'
 
 
 //-- Page component --
@@ -27,8 +28,8 @@ export default function LoginPage(){
         setError(null)
         setLoading(true)
 
-        const { error } = await supabase.auth.signInWithPassword({
-            email, 
+        const { data: signInData, error } = await supabase.auth.signInWithPassword({
+            email,
             password,
         })
 
@@ -36,6 +37,11 @@ export default function LoginPage(){
             setError("Invalid email or password")
             setLoading(false)
             return
+        }
+
+        if (signInData?.user) {
+            posthog.identify(signInData.user.id, { email: signInData.user.email })
+            posthog.capture('user_logged_in')
         }
 
         setLoading(false)

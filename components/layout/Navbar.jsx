@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/client'
 import { useRouter, usePathname } from 'next/navigation'
 import { Menu } from 'lucide-react'
+import posthog from 'posthog-js'
 
 export default function Navbar({ onMenuClick }) {
   const supabase = createClient()
@@ -10,6 +11,7 @@ export default function Navbar({ onMenuClick }) {
   const pathname = usePathname()
 
   async function handleLogout() {
+    posthog.reset()
     await supabase.auth.signOut()
     router.push('/')
   }

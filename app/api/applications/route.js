@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
+import { getPostHogClient } from '@/lib/posthog-server'
 
 // -- GET --
 
@@ -129,6 +130,7 @@ export async function POST(request) {
 
   // step 3: if files were uploaded, update the row with their paths and filenames
   // Object.keys(fileUpdates).length > 0 checks if fileUpdates has any properties
+  let finalApplication = application
   if (Object.keys(fileUpdates).length > 0) {
     const { data: updated, error: updateError } = await supabase
       .from('applications')
@@ -141,11 +143,23 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Failed to save file paths' }, { status: 500 })
     }
 
-    // return the updated application with file paths included
-    return NextResponse.json({ application: updated }, { status: 201 })
+    finalApplication = updated
   }
 
-  // no files uploaded — return the application as created
-  // status 201 means "created successfully"
-  return NextResponse.json({ application }, { status: 201 })
+  // track the creation server-side
+  const posthog = getPostHogClient()
+  if (posthog) {
+    posthog.capture({
+      distinctId: user.id,
+      event: 'application_created',
+      properties: {
+        status: finalApplication.status,
+        has_resume: !!finalApplication.resume_path,
+        has_cover_letter: !!finalApplication.cover_letter_path,
+      },
+    })
+    await posthog.flush()
+  }
+
+  return NextResponse.json({ application: finalApplication }, { status: 201 })
 }
