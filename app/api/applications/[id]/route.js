@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
+import { getPostHogClient } from '@/lib/posthog-server'
 
 //-- GET single application --
 
@@ -175,6 +176,21 @@ export async function PATCH(request, { params }) {
     return NextResponse.json({ error: 'Failed to update application' }, { status: 500 })
   }
 
+  // track the update server-side
+  const posthogPatch = getPostHogClient()
+  if (posthogPatch) {
+    posthogPatch.capture({
+      distinctId: user.id,
+      event: 'application_updated',
+      properties: {
+        status: updated.status,
+        has_resume: !!updated.resume_path,
+        has_cover_letter: !!updated.cover_letter_path,
+      },
+    })
+    await posthogPatch.flush()
+  }
+
   // return the updated application with 200 success
   return NextResponse.json({ application: updated }, { status: 200 })
 }
@@ -245,6 +261,16 @@ export async function DELETE(request, { params }) {
 
   if (error) {
     return NextResponse.json({ error: 'Failed to delete application' }, { status: 500 })
+  }
+
+  // track the deletion server-side
+  const posthogDelete = getPostHogClient()
+  if (posthogDelete) {
+    posthogDelete.capture({
+      distinctId: user.id,
+      event: 'application_deleted',
+    })
+    await posthogDelete.flush()
   }
 
   // return success confirmation

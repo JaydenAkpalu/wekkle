@@ -3,6 +3,7 @@
 // imports
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import posthog from 'posthog-js'
 
 export default function ApplicationsPage() {
   // state — applications list, loading, error, search and filter controls
@@ -64,6 +65,8 @@ export default function ApplicationsPage() {
       setConfirmDeleteId(null)
       return
     }
+
+    posthog.capture('application_deleted')
 
     setApplications(applications.filter((app) => app.id !== confirmDeleteId))
     setConfirmDeleteId(null)

@@ -3,6 +3,7 @@
 // imports
 import { useState, useEffect, use } from 'react'
 import Link from 'next/link'
+import posthog from 'posthog-js'
 
 export default function ApplicationDetailPage({ params }) {
   // states — application data, loading, error
@@ -37,6 +38,7 @@ export default function ApplicationDetailPage({ params }) {
   async function handleDownload(type) {
     const response = await fetch(`/api/applications/${id}/files/${type}`)
     const data = await response.json()
+    posthog.capture('document_downloaded', { document_type: type })
     window.open(data.url, '_blank')
   }
 
