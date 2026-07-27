@@ -25,6 +25,10 @@ export default function Home() {
       question: 'Is there a limit on how many applications I can track?',
       answer: 'No cap — track as many as you need.',
     },
+    {
+      question: 'Are my resumes and cover letters private?',
+      answer: 'Yes. Your uploaded resumes and cover letters are private to your account and not visible to other users. They are stored securely to provide the service and are never sold or shared with third parties.',
+    }
   ]
 
   function toggleFaq(index) {
