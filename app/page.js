@@ -169,12 +169,26 @@ export default function Home() {
       <section className="bg-gradient-to-b from-white to-slate-50 px-6 pb-12 md:pb-24">
         <div className="max-w-6xl mx-auto -mt-8 md:-mt-16">
           <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-2xl">
+            {/* Desktop: full screenshot, stays inside the max-w-6xl box */}
             <Image
               src={dashboardScreenshot}
               loading="eager"
               alt="JobFlow dashboard showing 23 total applications, a status breakdown across Applied, Interview, Offer, Rejected, and Ghosted, and a list of recent applications including Google, Microsoft, and Reddit"
-              className="w-full h-auto"
+              className="hidden md:block w-full h-auto"
             />
+          </div>
+        </div>
+
+        {/* Mobile: pulled out to the section's own full width, ignoring max-w-6xl */}
+        <div className="md:hidden -mr-6">
+          <div className="relative overflow-hidden border-y border-slate-200 shadow-2xl">
+            <Image
+              src={dashboardScreenshot}
+              loading="eager"
+              alt="JobFlow dashboard showing 23 total applications, a status breakdown across Applied, Interview, Offer, Rejected, and Ghosted, and a list of recent applications including Google, Microsoft, and Reddit"
+              className="w-[200%] max-w-none h-auto"
+            />
+            <div className="absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-white to-transparent" />
           </div>
         </div>
       </section>
