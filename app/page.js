@@ -27,7 +27,7 @@ export default function Home() {
     },
     {
       question: 'Are my resumes and cover letters private?',
-      answer: 'Yes. Your uploaded resumes and cover letters are private to your account and not visible to other users. They are stored securely to provide the service and are never sold or shared with third parties.',
+      answer: "Yes. Your resume and cover letter are stored in a private file bucket and there's no public link to them. Only you can access your own files, and downloads use temporary secure links that expire within a minute.",
     }
   ]
 
