@@ -82,7 +82,7 @@ export default function Home() {
                 automatically — no separate w-full needed. sm:flex-row
                 sm:items-center restores the original side-by-side,
                 content-sized layout at sm and up. */}
-            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-8 md:mb-0">
               <Link
                 href="/signup"
                 className="bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors text-lg text-center"
