@@ -5,6 +5,18 @@ import { Paperclip, Plus, TrendingUp, ChevronDown, Mail } from 'lucide-react'
 import Image from 'next/image'
 import dashboardScreenshot from './assets/dashboard.jpg'
 
+// Pool of placeholder avatars the badge cycles through, simulating new
+// students joining. Swap these for real user initials once you have
+// actual sign-ups worth showing — this is a stand-in until then.
+const AVATAR_POOL = [
+  { id: 1, initial: 'S', bg: 'bg-blue-200', text: 'text-blue-800' },
+  { id: 2, initial: 'M', bg: 'bg-green-200', text: 'text-green-800' },
+  { id: 3, initial: 'R', bg: 'bg-orange-200', text: 'text-orange-800' },
+  { id: 4, initial: 'A', bg: 'bg-purple-200', text: 'text-purple-800' },
+  { id: 5, initial: 'K', bg: 'bg-pink-200', text: 'text-pink-800' },
+  { id: 6, initial: 'J', bg: 'bg-teal-200', text: 'text-teal-800' },
+]
+
 export default function Home() {
   const [openIndex, setOpenIndex] = useState(null)
 
@@ -38,9 +50,24 @@ export default function Home() {
   return (
     <div className="min-h-screen flex flex-col bg-white text-slate-900">
 
+      {/* Pop-in animation for the beta badge's avatar circles. A plain
+          <style> tag works fine here — no styled-jsx or extra package
+          needed, it just renders as a real <style> element. Placed near
+          the top of the page; CSS applies globally to the document
+          regardless of where in the DOM the tag sits. */}
+      <style>{`
+        @keyframes avatar-marquee {
+          from { transform: translateX(0); }
+          to { transform: translateX(-50%); }
+        }
+        .animate-avatar-marquee {
+          animation: avatar-marquee 8s linear infinite;
+        }
+      `}</style>
+
       {/* Navbar */}
       <nav className="border-b border-slate-200 px-6 py-4">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
           <span className="text-xl font-bold text-slate-900">JobFlow</span>
           <div className="flex items-center gap-3">
             <Link
@@ -61,7 +88,7 @@ export default function Home() {
 
       {/* Hero */}
       <main className="flex-1 flex items-center px-6 py-15 md:py-24">
-        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
 
           {/* Left column - text content */}
           <div>
@@ -70,7 +97,7 @@ export default function Home() {
               resume you sent.
             </h1>
             <p className="text-xl text-slate-500 mb-10">
-              Track every application with the exact resume and cover letter you submitted, so you can review them before every interview.
+              Built for students applying to dozens of internships. Track every application alongside the exact resume and cover letter you submitted.
             </p>
             {/* RESPONSIVE FIX: was `flex items-center gap-4` with no mobile
                 fallback — both buttons squeezed into one row, forcing
@@ -81,8 +108,11 @@ export default function Home() {
                 button/link stretches to the full container width
                 automatically — no separate w-full needed. sm:flex-row
                 sm:items-center restores the original side-by-side,
-                content-sized layout at sm and up. */}
-            <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-8 md:mb-0">
+                content-sized layout at sm and up.
+                mb-9 -> mb-6: freed up a little room now that the beta
+                badge sits directly below this row instead of this being
+                the last element before the card stack. */}
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-6 lg:mb-0">
               <Link
                 href="/signup"
                 className="bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors text-lg text-center"
@@ -96,6 +126,53 @@ export default function Home() {
                 See how it works
               </button>
             </div>
+
+            {/* Beta badge, animated avatar stack.
+                - mt-8 (was mt-5): more breathing room above it.
+                - w-8 h-8 (was w-7 h-7): slightly bigger, 32px circles.
+                - text-slate-700 (was text-slate-600): darker instead of
+                  larger, so it reads more clearly without disrupting the
+                  size hierarchy (h1 > CTA label > this).
+                - key={avatar.id} + animate-avatar-pop: every time
+                  visibleAvatars changes (see the interval effect above),
+                  React remounts just the swapped circle, which replays
+                  the pop-in animation — same mechanism drives both the
+                  initial staggered entrance and each later "someone new
+                  joined" swap, no separate animation logic needed.
+                - animationDelay staggers the initial 3 on page load;
+                  harmless on later single-avatar swaps since only one
+                  circle animates at a time anyway. */}
+            <div className="mt-8 flex items-center gap-3">
+              {/* Marquee window: bg + border give the clipped strip a
+                  defined boundary instead of floating in blank space.
+                  The mask-image fades circles to transparent near the
+                  edges as they scroll through, instead of a hard clip —
+                  that hard edge was the "line" artifact. Kept as inline
+                  style since mask-image needs the -webkit- prefix for
+                  Safari, which Tailwind's arbitrary-value syntax can't
+                  express cleanly. */}
+              <div
+                className="relative w-24 h-10 overflow-hidden rounded-full bg-slate-50 border border-slate-200"
+                style={{
+                  WebkitMaskImage: 'linear-gradient(to right, transparent, black 15%, black 85%, transparent)',
+                  maskImage: 'linear-gradient(to right, transparent, black 15%, black 85%, transparent)',
+                }}
+              >
+                <div className="flex items-center h-full gap-2 px-1 w-max animate-avatar-marquee">
+                  {[...AVATAR_POOL, ...AVATAR_POOL].map((avatar, i) => (
+                    <div
+                      key={i}
+                      className={`flex-shrink-0 w-8 h-8 rounded-full ${avatar.bg} border-2 border-white flex items-center justify-center text-xs font-medium ${avatar.text}`}
+                    >
+                      {avatar.initial}
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <span className="text-sm text-slate-700">
+                Early beta — join the first 100 students shaping what we build next.
+              </span>
+            </div>
           </div>
 
           {/* Right column - stacked application cards.
@@ -107,10 +184,10 @@ export default function Home() {
               the point of showing them at all. The dashboard proof section
               below still carries "this is real" on mobile, so nothing is
               lost, just not duplicated. */}
-          <div className="hidden md:block relative h-[26rem] max-w-2xl w-full md:justify-self-end group">
+          <div className="hidden lg:block relative h-[26rem] max-w-2xl w-full lg:justify-self-end group">
 
             {/* Back card - Anthropic */}
-            <div className="absolute top-25 right-32 w-80 bg-slate-900 border border-slate-800 rounded-xl p-6 -rotate-[5deg] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25),0_0_50px_-5px_rgba(37,99,235,0.50)]">
+            <div className="absolute top-25 right-32 w-80 bg-slate-900 border border-slate-800 rounded-xl p-6 -rotate-[5deg] shadow-[0_30px_50px_-12px_rgba(0,0,0,0.50),0_0_50px_-5px_rgba(47,99,230,0.50)]">
               <p className="text-base font-medium text-slate-50">Anthropic</p>
               <p className="text-sm text-slate-400 mb-4">AI Eng Intern</p>
               <span className="inline-block text-sm font-medium text-white bg-blue-600 px-3 py-1 rounded-full mb-4">
@@ -162,14 +239,17 @@ export default function Home() {
           tall), so 96px of empty space below it reads as proportionally
           huge — nearly half the image's own height. pb-12 md:pb-24 halves
           it on mobile, restores the original value at md and up.
-          -mt-16 left as-is: now that the hero above has a predictable
-          height (no more broken card overflow inflating it unpredictably),
-          this should overlap correctly — worth a fresh look after these
-          changes rather than assuming. */}
+          -mt-8 -> mt-4 on mobile: the beta badge added real height to the
+          hero's left column (the only column visible on mobile, since the
+          card stack is lg:block-only), so the old fixed -32px pull-up now
+          sits tighter against the badge than intended. mt-4 gives it a
+          small positive gap instead. md:-mt-16 untouched — the desktop
+          hero's height is set by the taller card-stack column, which the
+          badge didn't change, so nothing needed fixing there. */}
       <section className="bg-gradient-to-b from-white to-slate-50 px-6 pb-12 md:pb-24">
-        <div className="max-w-6xl mx-auto -mt-8 md:-mt-16">
+        <div className="max-w-7xl mx-auto mt-4 md:-mt-16">
           <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-2xl">
-            {/* Desktop: full screenshot, stays inside the max-w-6xl box */}
+            {/* Desktop: full screenshot, stays inside the max-w-7xl box */}
             <Image
               src={dashboardScreenshot}
               loading="eager"
@@ -179,7 +259,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Mobile: pulled out to the section's own full width, ignoring max-w-6xl */}
+        {/* Mobile: pulled out to the section's own full width, ignoring max-w-7xl */}
         <div className="md:hidden -mr-6">
           <div className="relative overflow-hidden border-y border-slate-200 shadow-2xl">
             <Image
@@ -195,7 +275,7 @@ export default function Home() {
 
       {/* How it works */}
       <section id="how-it-works" className="bg-white px-6 py-16 md:py-24">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-slate-900 mb-3">How it works</h2>
             <p className="text-lg text-slate-500">Three steps. That's the whole system.</p>
@@ -279,7 +359,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="border-t border-slate-200 px-6 py-6">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-sm">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-sm">
           <span className="text-slate-400">© 2026 JobFlow. Built for job seekers.</span>
           <a
             href="mailto:jobflow.feedback@gmail.com?subject=JobFlow Feedback"
