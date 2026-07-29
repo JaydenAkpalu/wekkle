@@ -22,7 +22,7 @@ export default function Navbar({ onMenuClick }) {
     if (pathname === '/applications/new') return 'New Application'
     if (pathname.includes('/edit')) return 'Edit Application'
     if (pathname.startsWith('/applications/')) return 'Application Details'
-    return 'Wekkle'
+    return 'wekkle.'
   }
 
   return (
