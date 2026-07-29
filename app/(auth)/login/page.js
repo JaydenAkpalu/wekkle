@@ -53,10 +53,10 @@ export default function LoginPage(){
           {/* Logo */}
           <div className="text-center mb-8">
             <Link href="/" className="text-xl font-bold text-slate-900 hover:text-blue-600 transition-colors">
-              JobFlow
+              Wekkle
             </Link>
             <h1 className="text-2xl font-bold text-slate-900 mt-4">Login to your account</h1>
-            <p className="text-slate-500 text-sm mt-2">Welcome back to Jobflow</p>
+            <p className="text-slate-500 text-sm mt-2">Welcome back to Wekkle</p>
           </div>
     
           {/* Form */}

@@ -11,7 +11,7 @@ const cooperHewitt = localFont({
 })
 
 export const metadata = {
-  title: 'JobFlow',
+  title: 'Wekkle',
   description: 'Track your job applications across every platform in one place.',
 }
 

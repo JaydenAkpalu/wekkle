@@ -22,7 +22,7 @@ export default function Home() {
 
   const faqs = [
     {
-      question: 'Is JobFlow free?',
+      question: 'Is Wekkle free?',
       answer: 'Yes — no paid tier, no credit card required.',
     },
     {
@@ -68,7 +68,7 @@ export default function Home() {
       {/* Navbar */}
       <nav className="border-b border-slate-200 px-6 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <span className="text-xl font-bold text-slate-900">JobFlow</span>
+          <span className="text-xl font-bold text-slate-900">wekkle.</span>
           <div className="flex items-center gap-3">
             <Link
               href="/login"
@@ -170,7 +170,7 @@ export default function Home() {
                 </div>
               </div>
               <span className="text-sm text-slate-700">
-                Early beta — join the first 100 students shaping what we build next.
+                Early beta — join the first 100 students shaping Wekkle.
               </span>
             </div>
           </div>
@@ -253,7 +253,7 @@ export default function Home() {
             <Image
               src={dashboardScreenshot}
               loading="eager"
-              alt="JobFlow dashboard showing 23 total applications, a status breakdown across Applied, Interview, Offer, Rejected, and Ghosted, and a list of recent applications including Google, Microsoft, and Reddit"
+              alt="Wekkle dashboard showing 23 total applications, a status breakdown across Applied, Interview, Offer, Rejected, and Ghosted, and a list of recent applications including Google, Microsoft, and Reddit"
               className="hidden md:block w-full h-auto"
             />
           </div>
@@ -265,7 +265,7 @@ export default function Home() {
             <Image
               src={dashboardScreenshot}
               loading="eager"
-              alt="JobFlow dashboard showing 23 total applications, a status breakdown across Applied, Interview, Offer, Rejected, and Ghosted, and a list of recent applications including Google, Microsoft, and Reddit"
+              alt="Wekkle dashboard showing 23 total applications, a status breakdown across Applied, Interview, Offer, Rejected, and Ghosted, and a list of recent applications including Google, Microsoft, and Reddit"
               className="w-[200%] max-w-none h-auto"
             />
             <div className="absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-white to-transparent" />
@@ -360,9 +360,9 @@ export default function Home() {
       {/* Footer */}
       <footer className="border-t border-slate-200 px-6 py-6">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-sm">
-          <span className="text-slate-400">© 2026 JobFlow. Built for job seekers.</span>
+          <span className="text-slate-400">© 2026 Wekkle. Built for CS students, by CS students.</span>
           <a
-            href="mailto:jobflow.feedback@gmail.com?subject=JobFlow Feedback"
+            href="mailto:jobflow.feedback@gmail.com?subject=Wekkle Feedback"
             className="flex items-center gap-1.5 text-blue-600 font-medium hover:text-blue-700 transition-colors"
           >
             <Mail size={14} />

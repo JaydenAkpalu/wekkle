@@ -31,7 +31,7 @@ export default function Sidebar({ isOpen, onClose }) {
         
         {/* Logo */}
         <div className="h-16 flex items-center px-6">
-          <Link href="/dashboard" className="text-xl font-bold text-slate-900">JobFlow</Link>
+          <Link href="/dashboard" className="text-xl font-bold text-slate-900">Wekkle</Link>
         </div>
 
         {/* Navigation */}
@@ -54,7 +54,7 @@ export default function Sidebar({ isOpen, onClose }) {
 
         {/* Footer */}
         <div className="px-4 py-4 border-t border-slate-200">
-          <p className="text-xs text-slate-400 text-center">JobFlow V1</p>
+          <p className="text-xs text-slate-400 text-center">Wekkle V1</p>
         </div>
 
       </aside>

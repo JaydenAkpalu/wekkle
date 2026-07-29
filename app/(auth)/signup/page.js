@@ -57,7 +57,7 @@ export default function SignupPage() {
     return (
       <div className="text-center">
         <Link href="/" className="text-xl font-bold text-slate-900 hover:text-blue-600 transition-colors">
-          JobFlow
+          Wekkle
         </Link>
         <div className="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
           <h2 className="text-lg font-semibold text-slate-900 mb-2">Check your email</h2>
@@ -80,7 +80,7 @@ export default function SignupPage() {
       {/* Logo */}
       <div className="text-center mb-8">
         <Link href="/" className="text-xl font-bold text-slate-900 hover:text-blue-600 transition-colors">
-          JobFlow
+          Wekkle
         </Link>
         <h1 className="text-2xl font-bold text-slate-900 mt-4">Create your account</h1>
         <p className="text-slate-500 text-sm mt-2">Start tracking your job applications today</p>
