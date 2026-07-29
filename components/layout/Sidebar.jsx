@@ -31,7 +31,7 @@ export default function Sidebar({ isOpen, onClose }) {
         
         {/* Logo */}
         <div className="h-16 flex items-center px-6">
-          <Link href="/dashboard" className="text-xl font-bold text-slate-900">Wekkle</Link>
+          <Link href="/dashboard" className="text-xl font-bold text-slate-900">wekkle.</Link>
         </div>
 
         {/* Navigation */}
