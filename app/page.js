@@ -97,7 +97,7 @@ export default function Home() {
               resume you sent.
             </h1>
             <p className="text-xl text-slate-500 mb-10">
-              Built for students applying to dozens of internships. Track every application alongside the exact resume and cover letter you submitted.
+              Built for students applying to internships and new grad roles. Track every application alongside the exact resume and cover letter you submitted.
             </p>
             {/* RESPONSIVE FIX: was `flex items-center gap-4` with no mobile
                 fallback — both buttons squeezed into one row, forcing
@@ -170,7 +170,7 @@ export default function Home() {
                 </div>
               </div>
               <span className="text-sm text-slate-700">
-                Early beta — join the first 100 students shaping Wekkle.
+                Early beta — join the first 100 early users shaping Wekkle.
               </span>
             </div>
           </div>
@@ -360,7 +360,7 @@ export default function Home() {
       {/* Footer */}
       <footer className="border-t border-slate-200 px-6 py-6">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-sm">
-          <span className="text-slate-400">© 2026 Wekkle. Built for CS students, by CS students.</span>
+          <span className="text-slate-400">© 2026 Wekkle.</span>
           <a
             href="mailto:jobflow.feedback@gmail.com?subject=Wekkle Feedback"
             className="flex items-center gap-1.5 text-blue-600 font-medium hover:text-blue-700 transition-colors"
