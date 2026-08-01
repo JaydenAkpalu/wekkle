@@ -10,6 +10,7 @@ export default function SignupPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [agreedToPrivacy, setAgreedToPrivacy] = useState(false)
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
@@ -36,6 +37,11 @@ export default function SignupPage() {
     const { data: signUpData, error } = await supabase.auth.signUp({
       email,
       password,
+      options: {
+        data: {
+          accepted_privacy_at: new Date().toISOString(),
+        },
+      },
     })
 
     if (error) {
@@ -142,10 +148,32 @@ export default function SignupPage() {
             />
           </div>
 
+          {/* Privacy policy consent */}
+          <div className="flex items-start gap-2">
+            <input
+              type="checkbox"
+              id="privacy-consent"
+              checked={agreedToPrivacy}
+              onChange={(e) => setAgreedToPrivacy(e.target.checked)}
+              className="mt-0.5 h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+            />
+            <label htmlFor="privacy-consent" className="text-sm text-slate-600">
+              By signing up, I agree to the{' '}
+              <Link
+                href="/privacy"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:text-blue-700 font-medium"
+              >
+                privacy policy
+              </Link>
+            </label>
+          </div>
+
           {/* Submit */}
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || !agreedToPrivacy}
             className="w-full bg-blue-600 text-white py-2.5 rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
           >
             {loading ? 'Creating account...' : 'Create Account'}

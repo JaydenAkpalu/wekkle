@@ -14,35 +14,37 @@ const AVATAR_POOL = [
   { id: 3, initial: 'R', bg: 'bg-orange-200', text: 'text-orange-800' },
   { id: 4, initial: 'A', bg: 'bg-purple-200', text: 'text-purple-800' },
   { id: 5, initial: 'K', bg: 'bg-pink-200', text: 'text-pink-800' },
-  { id: 6, initial: 'J', bg: 'bg-teal-200', text: 'text-teal-800' },
+  { id: 6, initial: 'J', bg: 'bg-teal-200', text: 'text-teal-800' }
 ]
+
+const FAQS = [
+  {
+    question: 'Is Wekkle free?',
+    answer: 'Yes — no paid tier, no credit card required.',
+  },
+  {
+    question: 'What file types can I upload?',
+    answer: 'PDF only, up to 5MB per file.',
+  },
+  {
+    question: 'Can I edit or delete an application after adding it?',
+    answer: 'Yes — edit any field or delete an application entirely, any time, from your applications list.',
+  },
+  {
+    question: 'Is there a limit on how many applications I can track?',
+    answer: 'No cap — track as many as you need.',
+  },
+  {
+    question: 'Are my resumes and cover letters private?',
+    answer: "Yes. Your resume and cover letter are stored in a private file bucket and there's no public link to them. Only you can access your own files, and downloads use temporary secure links that expire within a minute.",
+  }
+]
+
 
 export default function Home() {
   const [openIndex, setOpenIndex] = useState(null)
 
-  const faqs = [
-    {
-      question: 'Is Wekkle free?',
-      answer: 'Yes — no paid tier, no credit card required.',
-    },
-    {
-      question: 'What file types can I upload?',
-      answer: 'PDF only, up to 5MB per file.',
-    },
-    {
-      question: 'Can I edit or delete an application after adding it?',
-      answer: 'Yes — edit any field or delete an application entirely, any time, from your applications list.',
-    },
-    {
-      question: 'Is there a limit on how many applications I can track?',
-      answer: 'No cap — track as many as you need.',
-    },
-    {
-      question: 'Are my resumes and cover letters private?',
-      answer: "Yes. Your resume and cover letter are stored in a private file bucket and there's no public link to them. Only you can access your own files, and downloads use temporary secure links that expire within a minute.",
-    }
-  ]
-
+  
   function toggleFaq(index) {
     setOpenIndex(openIndex === index ? null : index)
   }
@@ -324,7 +326,7 @@ export default function Home() {
         <div className="max-w-3xl mx-auto">
           <h2 className="text-3xl font-bold text-slate-900 text-center mb-12">Frequently asked questions</h2>
           <div className="space-y-3">
-            {faqs.map((faq, index) => (
+            {FAQS.map((faq, index) => (
               <div key={index} className="border border-slate-200 rounded-xl overflow-hidden">
                 <button
                   onClick={() => toggleFaq(index)}
@@ -361,9 +363,18 @@ export default function Home() {
       <footer className="border-t border-slate-200 px-6 py-6">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-sm">
           <span className="text-slate-400">© 2026 Wekkle.</span>
+          <Link
+              href="/privacy"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 text-slate-400 hover:text-slate-900 transition-colors"
+            >
+              Privacy
+            </Link>
+            
           <a
-            href="mailto:jobflow.feedback@gmail.com?subject=Wekkle Feedback"
-            className="flex items-center gap-1.5 text-blue-600 font-medium hover:text-blue-700 transition-colors"
+            href="mailto:feedback@wekkle.app?subject=Wekkle Feedback"
+            className="flex items-center gap-1.5 text-slate-400 hover:text-slate-900 transition-colors"
           >
             <Mail size={14} />
             Send feedback
@@ -373,4 +384,5 @@ export default function Home() {
 
     </div>
   )
+
 }
